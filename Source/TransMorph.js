@@ -4,7 +4,7 @@ name: Fx.CLI/TransMorph
 description: CLI TransMorph animation.
 license: MIT license
 authors: [Tim Wienk]
-requires: [Core/Fx, Core/Fx.Transitions]
+requires: [Core/Object, Core/Fx, Core/Fx.Transitions]
 provides: TransMorph
 inspiration: http://github.com/cheeaun/Fx.TransMorph and Fx.Diff by Ryan Florence for less writing to stdout
 ...
