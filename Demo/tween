@@ -1,0 +1,72 @@
+#!/usr/bin/env node
+// vim: set syntax=javascript:
+
+var sys = require('sys');
+require('./MooTools');
+Fx.CLI = require('../Source/Tween');
+
+(function(){
+
+	var options = {
+			executable: process.argv.shift(),
+			file: process.argv.shift(),
+			fn: sys.print
+		},
+		once = false,
+		arg;
+
+	while (arg = process.argv.shift()){
+		switch (arg){
+			case '-1': case'--once':
+				once = true;
+			break;
+
+			case '-c': case '--char':
+				options.char = process.argv.shift();
+			break;
+
+			case '-n': case '--nochar':
+				options.nochar = process.argv.shift();
+			break;
+
+			case '-t': case '--transition':
+				options.transition = process.argv.shift();
+			break;
+
+			case '-d': case '--duration':
+				options.duration = process.argv.shift().toInt();
+			break;
+
+			case '-m': case '--max':
+				options.max = process.argv.shift().toInt();
+			break;
+
+			case '-x': case '--x':
+				options.direction = 'x';
+			break;
+
+			case '-y': case '--y':
+				options.direction = 'y';
+			break;
+
+			case '-w': case '--wave':
+				options.direction = 'wave';
+			break;
+		}
+	}
+
+	var fx = new Fx.CLI.Tween(options),
+		run = function(){
+			fx.start(0, fx.options.max).start(fx.options.max, 0);
+		};
+
+	run();
+	if (once){
+		fx.chain(function(){
+			options.fn("\n");
+		});
+	} else {
+		run.periodical(fx.options.duration * 2);
+	}
+
+})();

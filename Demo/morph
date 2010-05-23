@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+// vim: set syntax=javascript:
+
+var sys = require('sys');
+require('./MooTools');
+Fx.CLI = require('../Source/Morph');
+
+(function(){
+
+	var options = {
+			executable: process.argv.shift(),
+			file: process.argv.shift(),
+			fn: sys.print,
+			max: {}
+		},
+		once = false,
+		arg;
+
+	while (arg = process.argv.shift()){
+		switch (arg){
+			case '-1': case'--once':
+				once = true;
+			break;
+
+			case '-c': case '--char':
+				options.char = process.argv.shift();
+			break;
+
+			case '-n': case '--nochar':
+				options.nochar = process.argv.shift();
+			break;
+
+			case '-t': case '--transition':
+				options.transition = process.argv.shift();
+			break;
+
+			case '-d': case '--duration':
+				options.duration = process.argv.shift().toInt();
+			break;
+
+			case '-x': case '--x':
+				options.max.x = process.argv.shift().toInt();
+			break;
+
+			case '-y': case '--y':
+				options.max.y = process.argv.shift().toInt();
+			break;
+		}
+	}
+
+	var fx = new Fx.CLI.Morph(options),
+		run = function(){
+			fx
+				.start({x: 0, y: [0, fx.options.max.y]})
+				.start({x: [0, fx.options.max.x], y: fx.options.max.y})
+				.start({x: [fx.options.max.x, 0], y: fx.options.max.y})
+				.start({x: [0, fx.options.max.x], y: [fx.options.max.y, 0]})
+				.start({x: fx.options.max.x, y: [0, fx.options.max.y]})
+				.start({x: [fx.options.max.x, 0], y: [fx.options.max.y, 0]})
+				.start({x: 0, y: [0, fx.options.max.y]})
+				.start({x: [0, fx.options.max.x], y: [fx.options.max.y, 0]})
+				.start({x: [fx.options.max.x, 0], y: 0});
+		};
+
+	run();
+	if (once){
+		fx.chain(function(){
+			options.fn("\n");
+		});
+	} else {
+		run.periodical(fx.options.duration * 9);
+	}
+
+})();
